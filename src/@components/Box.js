@@ -24,11 +24,18 @@ class Box extends PureComponent {
       this.props.position.z,
     );
     this.props.scene.add(this.cube);
+    this.animationId = this.props.registerAnimation(this.animate);
   }
 
   componentWillUnmount() {
     console.log('remove from scene');
     this.props.scene.remove(this.cube);
+    this.props.cancelAnimation(this.animationId);
+  }
+
+  animate = () => {
+    this.cube.rotation.x += 0.1;
+    this.cube.rotation.y += 0.1;
   }
 
   render() {

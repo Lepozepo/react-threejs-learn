@@ -9,4 +9,4 @@ This is a proof of concept showing how to marry reactjs with threejs. This parad
 - Use of react lifecycles in ThreeJS components
 - Atomic control of what is being rendered, how, and when
 - Use of react context for key ThreeJS elements like scene
-
+- Atomic control for animations and interactions
