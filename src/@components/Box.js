@@ -1,15 +1,20 @@
 /* eslint-disable */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import * as Three from 'three';
-import { withCanvas } from './Canvas';
 
-class Box extends PureComponent {
+export default class Box extends PureComponent {
   static defaultProps = {
     position: {
       x: 0,
       y: 0,
       z: 0,
     },
+  };
+
+  static contextTypes = {
+    scene: PropTypes.shape({}),
+    camera: PropTypes.shape({}),
   };
 
   geometry = new Three.BoxGeometry(1, 1, 1);
@@ -23,14 +28,12 @@ class Box extends PureComponent {
       this.props.position.y,
       this.props.position.z,
     );
-    this.props.scene.add(this.cube);
-    this.animationId = this.props.registerAnimation(this.animate);
+    this.context.scene.add(this.cube);
   }
 
   componentWillUnmount() {
     console.log('remove from scene');
-    this.props.scene.remove(this.cube);
-    this.props.cancelAnimation(this.animationId);
+    this.context.scene.remove(this.cube);
   }
 
   animate = () => {
@@ -42,5 +45,3 @@ class Box extends PureComponent {
     return null;
   }
 }
-
-export default withCanvas(Box);

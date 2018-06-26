@@ -5,11 +5,21 @@ import Canvas from '@components/Canvas';
 import Box from '@components/Box';
 import PerspectiveCamera from '@components/PerspectiveCamera';
 
+const Library = { Box, PerspectiveCamera };
+
 export default class App extends PureComponent {
   state = {
     children: [
       {
-        Component: Box,
+        Component: 'PerspectiveCamera',
+        props: {
+          position: {
+            z: 5,
+          }
+        },
+      },
+      {
+        Component: 'Box',
         props: {
           position: {
             x: 0,
@@ -28,7 +38,7 @@ export default class App extends PureComponent {
       children: [
         ...this.state.children,
         {
-          Component: Box,
+          Component: 'Box',
           props: {
             position: {
               x: 3,
@@ -45,7 +55,15 @@ export default class App extends PureComponent {
     this.setState({
       children: [
         {
-          Component: Box,
+          Component: 'PerspectiveCamera',
+          props: {
+            position: {
+              z: 5,
+            }
+          },
+        },
+        {
+          Component: 'Box',
           props: {
             position: {
               x: 0,
@@ -89,14 +107,12 @@ export default class App extends PureComponent {
         </button>
 
         <Canvas>
-          <PerspectiveCamera
-            position={{
-              z: 5,
-            }}
-          />
-          {this.state.children.map((child, idx) => (
-            <child.Component key={idx} {...child.props} />
-          ))}
+          {this.state.children.map((child, idx) => {
+            const Component = Library[child.Component];
+            return (
+              <Component key={idx} {...child.props} />
+            );
+          })}
         </Canvas>
       </Fragment>
     );

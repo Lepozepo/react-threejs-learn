@@ -5,27 +5,16 @@ import PropTypes from 'prop-types';
 import { getContext } from 'recompact';
 import uuid from 'uuid/v4';
 
-export const withCanvas = getContext({
-  scene: PropTypes.shape({}),
-  camera: PropTypes.shape({}),
-  registerAnimation: PropTypes.func,
-  cancelAnimation: PropTypes.func,
-});
-
 export default class Canvas extends PureComponent {
   static childContextTypes = {
     scene: PropTypes.shape({}),
     camera: PropTypes.shape({}),
-    registerAnimation: PropTypes.func,
-    cancelAnimation: PropTypes.func,
   };
 
   getChildContext() {
     return {
       scene: this.scene,
       camera: this.camera,
-      registerAnimation: this.registerAnimation,
-      cancelAnimation: this.cancelAnimation,
     };
   }
 
@@ -46,30 +35,14 @@ export default class Canvas extends PureComponent {
     this.removeResizeListener();
   }
 
-  animations = [];
-
-  registerAnimation = (fn) => {
-    const id = uuid();
-    this.animations.push({
-      id,
-      start: fn,
-    });
-    return id;
-  }
-
-  cancelAnimation = (id) => {
-    const animationIndex = this.animations.findIndex(animation => animation.id === id);
-    if (animationIndex === -1) return;
-    this.animations = [
-      ...this.animations.slice(0, animationIndex),
-      ...this.animations.slice(animationIndex + 1),
-    ];
-  }
+  renderedChildRefs = [];
 
   animate = () => {
     requestAnimationFrame(this.animate);
 
-    this.animations.forEach(animation => animation.start());
+    this.renderedChildRefs
+      .filter(child => !!child)
+      .forEach(child => child && child.animate && child.animate());
 
     this.renderer.render(this.scene, this.camera);
   }
@@ -89,12 +62,20 @@ export default class Canvas extends PureComponent {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  refFn = (r, idx) => {
+    this.renderedChildRefs[idx] = r;
+  };
+
   render() {
     return (
       <div
         ref={r => this.container = r}
       >
-        {this.props.children}
+        {React.Children.map(this.props.children, (child, idx) => {
+          return React.cloneElement(child, {
+            ref: (r) => this.refFn(r, idx),
+          })
+        })}
       </div>
     );
   }

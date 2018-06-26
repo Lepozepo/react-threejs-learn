@@ -1,10 +1,15 @@
 /* eslint-disable */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import * as Three from 'three';
 import get from 'lodash/get';
-import { withCanvas } from './Canvas';
 
-class PerspectiveCamera extends PureComponent {
+export default class PerspectiveCamera extends PureComponent {
+  static contextTypes = {
+    scene: PropTypes.shape({}),
+    camera: PropTypes.shape({}),
+  };
+
   componentDidMount() {
     this.updateCamera();
   }
@@ -14,9 +19,9 @@ class PerspectiveCamera extends PureComponent {
   }
 
   updateCamera = () => {
-    this.props.camera.position.z = get(this.props, 'position.z', this.props.camera.position.z);
-    this.props.camera.position.x = get(this.props, 'position.x', this.props.camera.position.x);
-    this.props.camera.position.y = get(this.props, 'position.y', this.props.camera.position.y);
+    this.context.camera.position.z = get(this.props, 'position.z', this.context.camera.position.z);
+    this.context.camera.position.x = get(this.props, 'position.x', this.context.camera.position.x);
+    this.context.camera.position.y = get(this.props, 'position.y', this.context.camera.position.y);
   }
 
   render() {
@@ -24,4 +29,3 @@ class PerspectiveCamera extends PureComponent {
   }
 }
 
-export default withCanvas(PerspectiveCamera);
