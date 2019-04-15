@@ -5,6 +5,8 @@ You can find the most recent version of this guide [here](https://github.com/fac
 
 ## NOTES
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Lepozepo/react-threejs-learn.svg)](https://greenkeeper.io/)
+
 This is a proof of concept showing how to marry reactjs with threejs. This paradigm enables:
 - Use of react lifecycles in ThreeJS components
 - Atomic control of what is being rendered, how, and when
